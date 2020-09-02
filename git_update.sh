@@ -1,6 +1,6 @@
 push_or_pull='s'
-branch_name="ken_dev_temp"
 remote_src='origin'
+branch_name="ken_dev_temp"
 
 if [ $# -gt 0 ]
     then
