@@ -1,8 +1,9 @@
 this is a repo to sync code or other kind of files/dirs between server and pc/mac using git for convenient
 
 ## params
-- r: receive or pull
-- s: send or push 
+- $1:
+   - r: receive or pull
+   - s: send or push 
 
 - $2: remote src, default is 'origin'
 
