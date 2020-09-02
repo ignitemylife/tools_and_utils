@@ -22,7 +22,7 @@ git branch
 sleep 1s
 
 git status
-read -p "Continue? [Y/N]" verify
+read -p "the remote_src is: $remote_src and whether Continue? [Y/N]" verify
 
 if [ $verify == 'Y' -o $verify == 'y' -o $verify == '' ]
     then
