@@ -1,4 +1,6 @@
-this is a repo to sync code or other kind of files/dirs between server and pc/mac using git for convenient
+This is a repo to sync code or other kind of files/dirs between server and pc/mac using git for convenient
+
+you can add the shell file to PATH or /usr/local/bin 
 
 ## params
 - $1:
