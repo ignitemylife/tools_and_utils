@@ -1,8 +1,8 @@
 *.pth
 *.pth.tar
 .idea
-__pycharm*
-.pyc
+*pycache*
+*.pyc
 build
 *.egg*
 dist
