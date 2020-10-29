@@ -1,2 +1,8 @@
 *.pth
 *.pth.tar
+.idea
+__pycharm*
+.pyc
+build
+*.egg*
+dist

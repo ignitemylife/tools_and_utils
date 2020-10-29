@@ -1,0 +1,5 @@
+SELECT *
+  FROM usa_db_origin.gifshow_ares_mini_mark_dt_snapshot
+  WHERE dt='2020-08-30'
+  and from_unixtime(cast(create_time/1000 as bigint),"yyyy-MM-dd") between '2020-08-25' and dt
+  and source_key=1
