@@ -12,6 +12,7 @@ import torch.nn as nn
 
 from ken_tools.utils.deep_learning import WarmupPolicy
 from ken_tools.deep_learning import initialize, TrainValBase
+from ken_tools.utils.deep_learning import torch_distributed_zero_first
 
 
 if __name__ == "__main__":
@@ -27,7 +28,6 @@ if __name__ == "__main__":
 
 
     # data
-    from ken_tools.utils.component.misc import torch_distributed_zero_first
     transforms = Compose([
         ToTensor(),
         RandomAdjustSharpness(sharpness_factor=0.6, p=0.5),
