@@ -11,7 +11,7 @@ from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, set_random_seed, init_dist
 from mmcv.utils import get_logger
 
-from ken_tools.utils.component.misc import get_timestamp
+from .misc import get_timestamp
 
 _DEVICE = 'cuda'
 _IS_DIST = True
@@ -70,7 +70,7 @@ def initialize():
         cfg.resume_from = args.resume_from
 
     ######################## init dist ########################
-    if _IS_DIST:
+    if torch.cuda.device_count() > 0 and _IS_DIST:
         init_dist('pytorch')
         rank, world_size = get_dist_info()
         cprint(f'using distribute training, rank: {rank}, world_size: {world_size}')
