@@ -5,6 +5,7 @@ from PIL import Image
 import argparse
 import random
 
+
 def parse_args():
     parser = argparse.ArgumentParser('to specific img show')
 
@@ -16,11 +17,13 @@ def parse_args():
 
     return args
 
+
 def is_img(img_name):
     return img_name.split('.')[-1].lower() in ['png', 'jpg', 'jpeg', 'bmp']
 
+
 def show_imgs(img_names, n_col=3, n_row=3):
-    random.shuffle(img_names)
+    # random.shuffle(img_names)
 
     length = len(img_names)
     n_col = min(length, n_col)
@@ -31,7 +34,13 @@ def show_imgs(img_names, n_col=3, n_row=3):
     _, axs = plt.subplots(n_row, n_col, figsize=(20, 3*n_row))
     axs = axs.flatten()
     for img_name, ax in zip(img_names[:show_len], axs[:show_len]):
-        img = Image.open(img_name)
+        if isinstance(img_name, str) and is_img(img_name):
+            try:
+                img = Image.open(img_name)
+            except:
+                img = Image.new('RGB', (512, 384))
+        else:
+            img = Image.fromarray(img_name[..., ::-1])
         ax.imshow(img)
         ax.grid(False)
         ax.axis('off')
@@ -41,14 +50,21 @@ def show_imgs(img_names, n_col=3, n_row=3):
     plt.tight_layout()
     plt.show()
 
+
 def show_img(img_name):
+    '''
+    :param img_name: only one img
+    :return: None
+    '''
     img = Image.open(img_name)
     plt.imshow(img)
     plt.show()
 
+
 def show_path(path, n_col=3, n_row=3):
     img_names = [os.path.join(path, f) for f in os.listdir(path) if is_img(f)]
     show_imgs(img_names, n_col=n_col, n_row=n_row)
+
 
 def display(args):
     n_col = args.n_col
@@ -70,7 +86,7 @@ def display(args):
             if os.path.isdir(argv):
                 img_names.extend([os.path.join(argv, f) for f in os.listdir(argv) if is_img(f)])
             elif is_img(argv):
-                img_names.extend(argv)
+                img_names.append(argv)
             else:
                 raise ValueError('Please check inputs')
         show_imgs(img_names, n_col, n_row)
