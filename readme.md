@@ -1,6 +1,6 @@
 # this is a tools repository developed by Kenneth
 ## 1. tools
-    - train: torchrun --nproc_per_node 4 -m ken_tools.tools.train your_config.py
+    - train: torchrun --nproc_per_node 4 -m ken_tools.tools.train --config your_config.py
     - xgb train
     
 ## 2. deep learning
