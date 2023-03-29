@@ -25,7 +25,8 @@
     
 ## distributed training 
  - train and val script example
-
+ 
+    ```
     
     from ken_tools.utils.deep_learning import WarmupPolicy
     from ken_tools.deep_learning import initialize, TrainValBase
@@ -71,10 +72,13 @@
 
         # val
         trainVal.val(model, loader)
-        
+   ```
+      
    - bash cmd
         
+    ```
+       torchrun --nproc_per_node 8 train.py --config ...
+    ```
         
-        torchrun --nproc_per_node 8 train.py --config ...
 
 
