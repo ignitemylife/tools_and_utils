@@ -35,7 +35,7 @@
 
     if __name__ == "__main__":
         # initialize
-        rank, world_size, local_rank, logger, cfg = initialize()
+        rank, world_size, local_rank, logger, cfg = initialize(is_dist=True)
         print(rank, world_size, local_rank)
 
         # model
@@ -78,6 +78,23 @@
         
     ```
        torchrun --nproc_per_node 8 train.py --config ...
+    ```
+   
+   - not using distributed
+   ```
+    initialize(is_dist=False)
+   
+    # model
+    ...
+   
+    # data
+    ...
+   
+    # optim
+    ...
+   
+    # train and val
+    ...
     ```
         
 

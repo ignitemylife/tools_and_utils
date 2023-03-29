@@ -13,8 +13,6 @@ from mmcv.utils import get_logger
 
 from .misc import get_timestamp
 
-_DEVICE = 'cuda'
-_IS_DIST = True
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a recognizer')
@@ -53,7 +51,7 @@ def parse_args():
 
     return parser.parse_args()
 
-def initialize():
+def initialize(is_dist=True):
     ######################## load arguments ########################
     # get args
     args = parse_args()
@@ -70,7 +68,7 @@ def initialize():
         cfg.ckpt = args.ckpt
 
     ######################## init dist ########################
-    if torch.cuda.device_count() > 0 and _IS_DIST:
+    if torch.cuda.device_count() > 0 and is_dist:
         init_dist('pytorch')
         rank, world_size = get_dist_info()
         cprint(f'using distribute training, rank: {rank}, world_size: {world_size}')
@@ -110,12 +108,12 @@ def initialize():
                     f'deterministic: {args.deterministic}')
         set_random_seed(args.seed, deterministic=args.deterministic)
 
-    logger.info(f'training device: {_DEVICE}, is_dist: {_IS_DIST}')
+    logger.info(f'training is_dist: {is_dist}')
     logger.info(f'Config: {cfg.pretty_text}')
     # dump config
     cfg.dump(osp.join(cfg.work_dir, osp.basename(args.config)))
 
-    local_rank = os.environ.get('LOCAL_RANK', rank % torch.cuda.device_count())
+    local_rank = os.environ.get('LOCAL_RANK', rank % max(torch.cuda.device_count(), 1))
     return rank, world_size, local_rank, logger, cfg
 
 

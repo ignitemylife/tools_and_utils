@@ -17,7 +17,7 @@ from ken_tools.utils.deep_learning import torch_distributed_zero_first
 
 if __name__ == "__main__":
     # initialize
-    rank, world_size, local_rank, logger, cfg = initialize()
+    rank, world_size, local_rank, logger, cfg = initialize(is_dist=True)
     print(rank, world_size, local_rank)
 
     # model
