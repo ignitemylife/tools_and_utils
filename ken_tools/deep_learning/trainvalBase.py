@@ -2,13 +2,15 @@ import os
 import os.path as osp
 import torch
 import logging
+import numpy as np
+from pdb import set_trace as st
+from torch.utils.tensorboard import SummaryWriter
 
 from mmcv.runner import get_dist_info, master_only
 from mmcv.utils import get_logger
 
+from ken_tools.utils.eval_utils import ClsEval
 
-from pdb import set_trace as st
-from torch.utils.tensorboard import SummaryWriter
 
 class TrainValBase():
     def __init__(self, epoches=-1, work_dir=None, save_interval=1, print_interval=10, cfg=None, logger=None):
@@ -54,6 +56,7 @@ class TrainValBase():
 
 
     def train(self, model, loader, criterion, optimizer, scheduler, warmup=None, amp=True, device='cuda', grad_clip=10):
+        model.train()
         for epoch in range(max(1, self.epoches)):
             len_of_loader = len(loader)
             for ind, (data, label) in enumerate(loader):
@@ -77,12 +80,50 @@ class TrainValBase():
                 optimizer.zero_grad(set_to_none=True)
                 warmup.step()   # iter update
 
-                self.log(epoch=epoch, ind=ind, len_of_loader=len_of_loader, loss=loss.item(), lr=warmup.get_last_lr())
+                if ind % self.print_interval == 0:
+                    self.log(epoch=epoch, ind=ind, len_of_loader=len_of_loader, loss=loss.item(), lr=warmup.get_last_lr())
+
                 self.add_to_tb(epoch * len_of_loader + ind, loss=loss.item(), lr=warmup.get_last_lr()[0])
 
             scheduler.step()  # epoch update
             loader.sampler.set_epoch(epoch)
 
+            if epoch % self.save_interval == 0:
+                torch.save(model.module.state_dict(), osp.join(self.work_dir, f'epoch_{epoch}.pth'))
+                self.logger.info(f'saved ckpts of {epoch}')
 
-    def val(self, model, loader, criterion=None, fp16=True, only_rank0=False):
-        pass
+
+    def val(self, model, loader, criterion=None, fp16=True, device='cuda', only_rank0=True):
+        self.logger.info('begin to validate...')
+
+        if only_rank0:
+            rank, _ = get_dist_info()
+            if rank != 0:
+                return
+
+        model.eval()
+        if fp16:
+            model.half()
+
+        len_of_loader = len(loader)
+        labels = []
+        preds = []
+        for ind, (data, label) in enumerate(loader):
+            data = data.to(device)
+            label = label.to(device)
+            with torch.no_grad():
+                if fp16:
+                    data = data.half()
+                out = model(data)
+                pred = torch.softmax(out, dim=-1)
+
+            self.logger.info(f'Test {ind}/{len_of_loader}')
+
+            labels.append(label.cpu().numpy())
+            preds.append(pred.cpu().numpy().astype(np.float32))
+
+        labels = np.concatenate(labels, axis=0)
+        preds = np.concatenate(preds, axis=0)
+
+        acc = ClsEval.accuracy(labels, preds)
+        self.logger.info(f'acc is {acc:.4f}')

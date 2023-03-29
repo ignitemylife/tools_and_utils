@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument('--config', default='config/config_example.py', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
-        '--resume-from', help='the checkpoint file to resume from')
+        '--ckpt', help='the checkpoint file to resume from or to test')
     parser.add_argument(
         '--validate',
         action='store_true',
@@ -66,8 +66,8 @@ def initialize():
     elif cfg.get('work_dir', None) is None:
         cfg.work_dir = osp.join('./work_dirs', osp.splitext(osp.basename(args.config))[0])
 
-    if args.resume_from is not None:
-        cfg.resume_from = args.resume_from
+    if args.ckpt is not None:
+        cfg.ckpt = args.ckpt
 
     ######################## init dist ########################
     if torch.cuda.device_count() > 0 and _IS_DIST:

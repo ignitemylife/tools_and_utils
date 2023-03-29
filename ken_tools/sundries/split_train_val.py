@@ -1,6 +1,7 @@
 import os
 import argparse
 import random
+from ken_tools.utils.data import get_record
 
 class SplitTrainVal():
     @staticmethod
@@ -45,7 +46,9 @@ class SplitTrainVal():
 
     @staticmethod
     def split_record(filename, val_num, ratio=None, save_dir=None):
-        pass
+        import mxnet as mx # lazy import
+        record = get_record(filename)
+        train_record = get_record(filename)
 
     @staticmethod
     def __get_ind(val_num, ratio, total):

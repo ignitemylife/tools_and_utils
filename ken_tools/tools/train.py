@@ -22,7 +22,6 @@ if __name__ == "__main__":
 
     # model
     model = resnet18()
-    model = model.to(rank)
     model = model.to(rank % torch.cuda.device_count())
     model = DistributedDataParallel(model, device_ids=[rank % torch.cuda.device_count()])
 

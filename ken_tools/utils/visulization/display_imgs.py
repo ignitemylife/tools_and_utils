@@ -6,18 +6,6 @@ import argparse
 import random
 
 
-def parse_args():
-    parser = argparse.ArgumentParser('to specific img show')
-
-    parser.add_argument('img_info', type=str, default='.', nargs='+', help='img root or img name')
-    parser.add_argument('--n-col', '-c', type=int, default=3)
-    parser.add_argument('--n-row', '-n', type=int, default=3)
-
-    args = parser.parse_args()
-
-    return args
-
-
 def is_img(img_name):
     return img_name.split('.')[-1].lower() in ['png', 'jpg', 'jpeg', 'bmp']
 
@@ -90,8 +78,3 @@ def display(args):
             else:
                 raise ValueError('Please check inputs')
         show_imgs(img_names, n_col, n_row)
-
-
-if __name__ == "__main__":
-    args = parse_args()
-    display(args)

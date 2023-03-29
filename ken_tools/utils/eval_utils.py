@@ -195,3 +195,9 @@ class ClsEval:
     def get_ap(gts, preds):
         ap = average_precision_score(gts, preds)
         return ap
+
+    @staticmethod
+    def accuracy(gts, preds, topk=1):
+        pred_cats = np.argsort(-preds, axis=-1)[:, :topk]
+        gts = gts[..., None]
+        return np.sum(pred_cats==gts) / pred_cats.shape[0]
