@@ -46,25 +46,26 @@ def get_record_wo_postfix(root, mode='r'):
 
 
 def get_record(meta: Union[tuple, list, str], mode='r'):
-    def _check_exist_if_write(idx, rec):
+    def _check_exist_if_write(idx, rec, mode):
+        if mode != 'w':
+            return
         if osp.exists(idx) or osp.exists(rec):
             raise ValueError('overwrite record is not allowed, please manually delete it and re-run')
 
     op = 'read' if mode=='r' else 'write'
-
     if isinstance(meta, (tuple, list)):
         print(f'{op} record from {meta[0]}')
         try:
             idx = meta[0]
             rec = meta[1]
 
-            _check_exist_if_write(idx, rec)
+            _check_exist_if_write(idx, rec, mode)
             record = mx.recordio.MXIndexedRecordIO(meta[0], meta[1], mode)
         except:
             idx = osp.join(meta[0], f'{meta[1]}.idx')
             rec = osp.join(meta[0], f'{meta[1]}.rec')
 
-            _check_exist_if_write(idx, rec)
+            _check_exist_if_write(idx, rec, mode)
             record = mx.recordio.MXIndexedRecordIO(idx, rec, mode)
     else:
         print(f'{op} record from {meta}')
