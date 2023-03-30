@@ -1,9 +1,8 @@
-this repo can help you train and val your model quickly
+# this repo can help you train and val your model quickly
 
-# training and val
- ## 1.distributed train and val
-    ```
-    
+## training and val
+ ### 1.distributed train and val
+   ```
     from ken_tools.utils.deep_learning import WarmupPolicy
     from ken_tools.deep_learning import initialize, TrainValBase
     from ken_tools.utils.deep_learning import torch_distributed_zero_first
@@ -48,13 +47,12 @@ this repo can help you train and val your model quickly
 
         # val
         trainVal.val(model, loader)
-        ```
+  ```
         
 run cmd like this:
 > torchrun --nproc_per_node 8 train.py --config ...
     
-   
-## 2. not using distributed
+### 2. not using distributed
    ```
     initialize(is_dist=False)
    
@@ -73,3 +71,6 @@ run cmd like this:
 
 run cmd like this:
 >python train.py ...
+
+## trainvalBase
+read [src](../ken_tools/deep_learning/trainvalBase.py), just need to override the `train` and `val` method

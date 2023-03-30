@@ -22,6 +22,18 @@ class AverageMeter(object):
         return fmtstr.format(**self.__dict__)
 
 
+class ExpMeter(AverageMeter):
+    def __init__(self, name, fmt=':f', momenta=0.9):
+        super().__init__(name, fmt)
+        self.momenta = momenta
+
+    def update(self, val, n=1):
+        self.val = val
+        self.avg = self.avg * self.momenta + val * (1 - self.momenta) if self.count > 0 else val
+        self.count += n
+
+
+
 class ProgressMeter(object):
     def __init__(self, num_batches, meters, prefix=""):
         self.batch_fmtstr = self._get_batch_fmtstr(num_batches)

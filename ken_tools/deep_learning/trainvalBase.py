@@ -10,6 +10,7 @@ from mmcv.runner import get_dist_info, master_only
 from mmcv.utils import get_logger
 
 from ken_tools.utils.eval_utils import ClsEval
+from ken_tools.utils.meters import AverageMeter, ExpMeter, ProgressMeter
 
 
 class TrainValBase():
@@ -34,6 +35,8 @@ class TrainValBase():
 
         self.logger = logger if logger is None else get_logger('TrainVal', log_level=logging.INFO if rank==0 else logging.ERROR)
 
+        self.cfg = cfg # reserved
+
 
     @master_only
     def log(self, *args, **kwargs):
@@ -52,13 +55,16 @@ class TrainValBase():
 
 
     def init_meters(self):
-        pass
+        avgExample = AverageMeter('example')
+        expExample = ExpMeter('example')
+        return [avgExample, expExample]
 
 
     def train(self, model, loader, criterion, optimizer, scheduler, warmup=None, amp=True, device='cuda', grad_clip=10):
         rank, _ = get_dist_info()
 
         model.train()
+        # meters = self.init_meters()
         for epoch in range(max(1, self.epoches)):
             len_of_loader = len(loader)
             for ind, (data, label) in enumerate(loader):
