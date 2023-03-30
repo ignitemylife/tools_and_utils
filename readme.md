@@ -4,6 +4,7 @@
     python setup.py install
 or
 
+    cd $code_dir
     pip install .
 
 **tips**: help print
