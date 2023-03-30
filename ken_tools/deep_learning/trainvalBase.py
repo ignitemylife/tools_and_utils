@@ -56,6 +56,8 @@ class TrainValBase():
 
 
     def train(self, model, loader, criterion, optimizer, scheduler, warmup=None, amp=True, device='cuda', grad_clip=10):
+        rank, _ = get_dist_info()
+
         model.train()
         for epoch in range(max(1, self.epoches)):
             len_of_loader = len(loader)
@@ -88,7 +90,7 @@ class TrainValBase():
             scheduler.step()  # epoch update
             loader.sampler.set_epoch(epoch)
 
-            if epoch % self.save_interval == 0:
+            if rank == 0 and epoch % self.save_interval == 0: # important, multi processes write one file simultaneously may corupt the file
                 torch.save(model.module.state_dict(), osp.join(self.work_dir, f'epoch_{epoch}.pth'))
                 self.logger.info(f'saved ckpts of {epoch}')
 
