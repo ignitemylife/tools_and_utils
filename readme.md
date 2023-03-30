@@ -2,6 +2,14 @@
 ## install
     cd $code_dir
     python setup.py install
+or
+
+    pip install .
+
+**tips**: help print
+    
+    python -m ken_tools -h    
+    
 ## packages
 ### 1. tools
     [1] deep model train

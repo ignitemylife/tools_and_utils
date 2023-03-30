@@ -1,3 +1,4 @@
+import sys
 import cv2
 import base64
 import numpy as np
@@ -41,7 +42,7 @@ def decodeB64Str2Npy(s: str, cv2_decode: bool = True, dtype: np.dtype = np.uint8
 
 
 if __name__ == "__main__":
-    imgname = '/Users/konglingshu/Desktop/test_blip2_images/2.jpg'
+    imgname = sys.argv[1]
     ori_img = cv2.imread(imgname)
 
     # encode numpy array
