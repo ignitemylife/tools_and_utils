@@ -7,9 +7,16 @@ or
     cd $code_dir
     pip install .
 
-**tips**: help print
+**tips**: 
+
+1. help print
+   
     
     python -m ken_tools -h    
+       
+2. **ken** means what?
+    
+    ken means Kenneth, the author of this repo, contact me with phone num: 13018027867 or wechat
     
 ## packages
 ### 1. tools
